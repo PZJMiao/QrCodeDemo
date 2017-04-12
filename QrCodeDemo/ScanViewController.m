@@ -19,7 +19,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     self.title = @"扫一扫";
     /**
      * 调用扫描二维码的view的方法
