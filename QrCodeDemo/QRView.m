@@ -18,6 +18,21 @@
     AVCaptureSession *_session;
     UIImageView *_scanView;
     UIImageView *_lineView;
+    AVCaptureDevice *device;//获取摄像设备
+}
+
+- (void)setIsHasFlash:(BOOL)isHasFlash
+{
+    _isHasFlash = isHasFlash;
+    if (self.isHasFlash) {
+        //闪光灯
+        if ([device hasFlash] && [device hasTorch]) {
+            [device lockForConfiguration:nil];
+            [device setFlashMode:AVCaptureFlashModeAuto];
+            [device setTorchMode:AVCaptureTorchModeAuto];
+            [device unlockForConfiguration];
+        }
+    }
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -29,7 +44,8 @@
     return self;
 }
 
-- (void)initView{
+- (void)initView
+{
 
     //图片可以随时替换
     UIImage *scanImage = [UIImage imageNamed:@"scanscanBg"];
@@ -40,23 +56,14 @@
     CGRect scanFrame = CGRectMake(width/2.-100, height/2.-100, scanW, scanW);
     _scanViewFrame = scanFrame;
     
-    
     _scanView = [[UIImageView alloc]initWithImage:scanImage];
     _scanView.backgroundColor = [UIColor clearColor];
     _scanView.frame = scanFrame;
     [self addSubview:_scanView];
     
-    
     //获取摄像设备
-    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    
-//    //闪光灯
-//    if ([device hasFlash] && [device hasTorch]) {
-//        [device lockForConfiguration:nil];
-//        [device setFlashMode:AVCaptureFlashModeAuto];
-//        [device setTorchMode:AVCaptureTorchModeAuto];
-//        [device unlockForConfiguration];
-//    }
+    device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+
     //创建输入流
     AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device error:nil];
     
@@ -106,6 +113,14 @@
     [self setOverView];
     [_session startRunning];
     [self loopDrawLine];
+    
+    //新添加的view
+    UIButton *photoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    photoBtn.frame = CGRectMake(self.frame.size.width - 120, self.frame.size.height - 140, 100, 100);
+    photoBtn.backgroundColor = [UIColor brownColor];
+    [photoBtn setTitle:@"相册" forState:UIControlStateNormal];
+    [photoBtn addTarget:self action:@selector(photoBtnClick) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:photoBtn];
     
 }
 
@@ -199,6 +214,18 @@
 - (void)stopScan{
     _lineView.hidden = YES;
     [_session stopRunning];
+}
+
+
+/**
+ * 相册中选择二维码图片识别
+ */
+- (void)photoBtnClick
+{
+    NSLog(@"相册。。。");
+    if ([_delegate respondsToSelector:@selector(selectPhotoQRCode)]) {
+        [_delegate selectPhotoQRCode];
+    }
 }
 /*
 // Only override drawRect: if you perform custom drawing.

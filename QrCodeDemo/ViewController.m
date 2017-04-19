@@ -108,6 +108,11 @@
     scanResult.text = str;
 }
 
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    [textField resignFirstResponder];
+}
+
 - (UIImageView *)qrCodelImage
 {
     if (_qrCodelImage == nil) {
