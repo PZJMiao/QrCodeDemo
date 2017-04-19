@@ -99,7 +99,13 @@
     //生成二维码的方法：
     NSLog(@"生成二维码");
     NSString *str = textField.text;
-    self.qrCodelImage.image = [UIImage qrImageByContent:str];
+    
+    if (str.length>0) {
+        self.qrCodelImage.image = [UIImage qrImageByContent:str];
+    }else{
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"请输入文字" delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil, nil];
+        [alert show];
+    }
 }
 
 #pragma mark - ScanViewControllerDelegate
