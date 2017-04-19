@@ -51,3 +51,6 @@
     _qrCodelImage.image = [UIImage qrImageByContent:str];
 
 ```
+
+#### 新增功能：识别相册中二维码照片功能
+- 具体实现参考代码中实现方法
